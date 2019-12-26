@@ -8,8 +8,31 @@ rf = range_file.UrlRangeFile(url)
 # rf = range_file.FSRangeFile("Django-3.0.1-py3-none-any.whl")
 zf = zipfile.ZipFile(rf)
 
-print(f"Before: {rf.bytes_read_ratio():.2%}")
+print(
+    f"Read at opening: {rf.total_bytes_read() / 1024:.2f}kb"
+    f" ({rf.bytes_read_ratio():.2%})"
+)
+# Read at opening: 315.34kb (4.35%)
 
-print(zf.open("Django-3.0.1.dist-info/METADATA").read().decode("utf-8"))
 
-print(f"After: {rf.bytes_read_ratio():.2%}")
+contents = zf.open("Django-3.0.1.dist-info/METADATA").read().decode("utf-8")
+print(f"File size: {len(contents) / 1024:.2f}kb")
+# File size: 3.49kb
+
+print(contents)
+# ...
+# Requires-Python: >=3.6
+# Requires-Dist: pytz
+# Requires-Dist: sqlparse (>=0.2.2)
+# Requires-Dist: asgiref (~=3.2)
+# Provides-Extra: argon2
+# Requires-Dist: argon2-cffi (>=16.1.0) ; extra == 'argon2'
+# Provides-Extra: bcrypt
+# Requires-Dist: bcrypt ; extra == 'bcrypt'
+# ...
+
+print(
+    f"After reading a single file: {rf.total_bytes_read() / 1024:.2f}kb"
+    f" ({rf.bytes_read_ratio():.2%})"
+)
+# After reading a single file: 316.82kb (4.37%)
